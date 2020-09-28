@@ -1,6 +1,6 @@
 {
-	"name": "baraja-core/seo-meta",
-	"homepage": "https://gitlab.com/baraja-core/dynamic-configuration",
+	"name": "baraja-core/dynamic-configuration",
+	"homepage": "https://github.com/baraja-core/dynamic-configuration",
 	"authors": [
 		{
 			"name": "Jan Barášek",
