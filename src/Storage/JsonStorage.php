@@ -82,12 +82,6 @@ final class JsonStorage implements Storage
 
 	public function save(string $key, string $value): void
 	{
-		if ($value === null) {
-			$this->remove($key);
-
-			return;
-		}
-
 		$parser = $this->parseKey($key);
 		$this->loadFile($parser['namespace'], true);
 		$this->cache[$parser['namespace']][$parser['key']] = $value;
