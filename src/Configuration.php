@@ -7,9 +7,7 @@ namespace Baraja\DynamicConfiguration;
 
 final class Configuration
 {
-
-	/** @var Storage|null */
-	private $storage;
+	private ?Storage $storage;
 
 
 	/**

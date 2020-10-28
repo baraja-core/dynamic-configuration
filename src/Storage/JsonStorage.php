@@ -13,14 +13,13 @@ final class JsonStorage implements Storage
 {
 	private const MAX_EXPIRATION_MS = 500;
 
-	/** @var string */
-	private $storageDir;
+	private string $storageDir;
 
 	/** @var string[][] (namespace => {data}) */
-	private $cache = [];
+	private array $cache = [];
 
 	/** @var float[] (namespace => expiration) */
-	private $cacheExpiration = [];
+	private array $cacheExpiration = [];
 
 
 	public function __construct(string $storageDir)
