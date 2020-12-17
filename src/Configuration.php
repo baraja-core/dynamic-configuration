@@ -7,7 +7,7 @@ namespace Baraja\DynamicConfiguration;
 
 final class Configuration
 {
-	private ?Storage $storage;
+	private ?Storage $storage = null;
 
 
 	/**
@@ -29,7 +29,6 @@ final class Configuration
 	 * Find multiple of keys directly with better loading performance.
 	 *
 	 * @param string[] $keys in format (finalKey => findKey) or (numeric => findKey)
-	 * @param string|null $namespace
 	 * @return string[]|null[]
 	 */
 	public function getMultiple(array $keys, ?string $namespace = null): array
@@ -71,7 +70,7 @@ final class Configuration
 
 	public function increment(string $key, int $count = 1, ?string $namespace = null): void
 	{
-		if (Helpers::isNumeric($value = $this->get($key, $namespace)) === false) {
+		if (Helpers::isNumeric($value = (string) $this->get($key, $namespace)) === false) {
 			throw new \RuntimeException('Constant "' . Helpers::formatKey($key, $namespace) . '" should be numeric, but value "' . $value . '" given.');
 		}
 

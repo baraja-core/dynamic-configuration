@@ -30,11 +30,14 @@ final class DynamicConfigurationExtension extends CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		if (isset($this->config['storage']) === true) {
-			if (\class_exists($this->config['storage']) === false) {
-				throw new \RuntimeException('Configuration storage class "' . $this->config['storage'] . '" does not exist.');
+		/** @var mixed[] $config */
+		$config = $this->getConfig();
+
+		if (isset($config['storage']) === true) {
+			if (\class_exists($config['storage']) === false) {
+				throw new \RuntimeException('Configuration storage class "' . $config['storage'] . '" does not exist.');
 			}
-			$storageService = $this->config['storage'];
+			$storageService = $config['storage'];
 		} else {
 			$storageService = $this->resolveDefaultStorage($builder);
 		}
@@ -47,6 +50,9 @@ final class DynamicConfigurationExtension extends CompilerExtension
 
 	private function resolveDefaultStorage(ContainerBuilder $builder): string
 	{
+		/** @var mixed[] $config */
+		$config = $this->getConfig();
+
 		if (\class_exists(self::DOCTRINE_STORAGE_CLASS) === true) { // try find recommended official Doctrine storage
 			$builder->addDefinition('baraja.jsonStorage')
 				->setFactory(self::DOCTRINE_STORAGE_CLASS)
@@ -56,8 +62,8 @@ final class DynamicConfigurationExtension extends CompilerExtension
 		}
 
 		// Define fallback json storage with writing to filesystem
-		if (isset($this->config['dataDirPath']) === true) {
-			$dataDir = $this->config['dataDirPath'];
+		if (isset($config['dataDirPath']) === true) {
+			$dataDir = $config['dataDirPath'];
 		} else {
 			/** @var CompilerExtension[] $params */
 			$params = $this->compiler->getExtensions(ParametersExtension::class);
@@ -65,7 +71,7 @@ final class DynamicConfigurationExtension extends CompilerExtension
 				if (\is_dir($appDir = $params['parameters']->getConfig()['appDir'] ?? '') === false) {
 					throw new \RuntimeException('Configuration parameter "appDir" does not exist. Did you install Nette correctly?');
 				}
-				$dataDir = $appDir . '/../data/' . $this->config['dataDir'];
+				$dataDir = $appDir . '/../data/' . $config['dataDir'];
 			} else {
 				throw new \RuntimeException('DI parameters are not available now. Did you install Nette correctly?');
 			}
