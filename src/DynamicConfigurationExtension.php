@@ -68,7 +68,9 @@ final class DynamicConfigurationExtension extends CompilerExtension
 			/** @var CompilerExtension[] $params */
 			$params = $this->compiler->getExtensions(ParametersExtension::class);
 			if (isset($params['parameters']) === true) {
-				if (\is_dir($appDir = $params['parameters']->getConfig()['appDir'] ?? '') === false) {
+				/** @var mixed[] $applicationParameters */
+				$applicationParameters = $params['parameters']->getConfig();
+				if (\is_dir($appDir = (string) ($applicationParameters['appDir'] ?? '')) === false) {
 					throw new \RuntimeException('Configuration parameter "appDir" does not exist. Did you install Nette correctly?');
 				}
 				$dataDir = $appDir . '/../data/' . $config['dataDir'];
