@@ -50,14 +50,17 @@ final class Configuration
 
 	public function save(string $key, ?string $value, ?string $namespace = null): void
 	{
+		$formattedKey = Helpers::formatKey($key, $namespace);
+		$storage = $this->getStorage();
 		if ($value === null) {
-			$this->getStorage()->remove(Helpers::formatKey($key, $namespace));
+			$storage->remove($formattedKey);
 		} else {
 			if (($length = mb_strlen($value, 'UTF-8')) > 512) {
 				throw new \RuntimeException('Maximal value length is 512 characters, but ' . $length . ' given.');
 			}
-
-			$this->getStorage()->save(Helpers::formatKey($key, $namespace), $value);
+			if ($storage->get($formattedKey) !== $value) { // Save only if the value has changed.
+				$storage->save($formattedKey, $value);
+			}
 		}
 	}
 
