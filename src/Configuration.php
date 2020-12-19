@@ -27,6 +27,9 @@ final class Configuration
 
 	/**
 	 * Find multiple of keys directly with better loading performance.
+	 * The searched keys must not be duplicated in relation to each other or to the alias.
+	 * You can use the real key (findKey) to search or rename the key to your own alias (finalKey).
+	 * The namespace is used for all keys, you cannot search for more than one namespace at a time.
 	 *
 	 * @param string[] $keys in format (finalKey => findKey) or (numeric => findKey)
 	 * @return string[]|null[]
@@ -35,7 +38,13 @@ final class Configuration
 	{
 		$keyMap = [];
 		foreach ($keys as $keyReturn => $keyFind) {
-			$keyMap[Helpers::formatKey($keyFind, $namespace)] = \is_int($keyReturn) ? $keyFind : $keyReturn;
+			if (isset($keyMap[$realKey = Helpers::formatKey($keyFind, $namespace)]) === true) {
+				throw new \InvalidArgumentException(
+					'Key "' . $realKey . '" already exist in key map, because "' . $keyFind . '"'
+					. ' (or alias "' . $keyReturn . '") is duplicated.'
+				);
+			}
+			$keyMap[$realKey] = \is_int($keyReturn) ? $keyFind : $keyReturn;
 		}
 
 		$return = [];
