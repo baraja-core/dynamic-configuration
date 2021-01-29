@@ -106,7 +106,7 @@ final class JsonStorage implements Storage
 		if (isset($this->cache[$namespace]) === false || $force === true) {
 			if (\is_file($path = $this->storageDir . '/' . $namespace . '.json') === true) {
 				try {
-					$this->cacheExpiration[$namespace] = (float) \microtime(true) + (self::MAX_EXPIRATION_MS / 1000);
+					$this->cacheExpiration[$namespace] = (float) \microtime(true) + (self::MAX_EXPIRATION_MS / 1_000);
 					$this->cache[$namespace] = Json::decode(FileSystem::read($path), Json::FORCE_ARRAY);
 				} catch (JsonException $e) {
 					throw new \RuntimeException('Invalid json in storage: ' . $e->getMessage(), $e->getCode(), $e);
