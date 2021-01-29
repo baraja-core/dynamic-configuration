@@ -41,7 +41,7 @@ final class Configuration
 			if (isset($keyMap[$realKey = Helpers::formatKey($keyFind, $namespace)]) === true) {
 				throw new \InvalidArgumentException(
 					'Key "' . $realKey . '" already exist in key map, because "' . $keyFind . '"'
-					. ' (or alias "' . $keyReturn . '") is duplicated.'
+					. ' (or alias "' . $keyReturn . '") is duplicated.',
 				);
 			}
 			$keyMap[$realKey] = \is_int($keyReturn) ? $keyFind : $keyReturn;

@@ -59,7 +59,11 @@ final class JsonStorage implements Storage
 		$return = [];
 		foreach (new \FilesystemIterator($this->storageDir) as $item) {
 			/** @var \SplFileInfo $item */
-			if ($item->getExtension() === 'json' && \is_file($item->getPathname()) === true && preg_match('/^(.+)\.json$/', $item->getBasename(), $parser)) {
+			if (
+				$item->getExtension() === 'json'
+				&& \is_file($item->getPathname()) === true
+				&& preg_match('/^(.+)\.json$/', $item->getBasename(), $parser)
+			) {
 				foreach (Json::decode(FileSystem::read($item->getPathname()), Json::FORCE_ARRAY) as $key => $value) {
 					$return[$parser[1] . '__' . $key] = $value;
 				}
@@ -93,13 +97,16 @@ final class JsonStorage implements Storage
 	 */
 	private function loadFile(string $namespace, bool $force = false): array
 	{
-		if (isset($this->cacheExpiration[$namespace]) === true && $this->cacheExpiration[$namespace] >= \microtime(true)) {
+		if (
+			isset($this->cacheExpiration[$namespace]) === true
+			&& $this->cacheExpiration[$namespace] >= \microtime(true)
+		) {
 			$force = true;
 		}
 		if (isset($this->cache[$namespace]) === false || $force === true) {
 			if (\is_file($path = $this->storageDir . '/' . $namespace . '.json') === true) {
 				try {
-					$this->cacheExpiration[$namespace] = ((float) \microtime(true)) + (self::MAX_EXPIRATION_MS / 1000);
+					$this->cacheExpiration[$namespace] = (float) \microtime(true) + (self::MAX_EXPIRATION_MS / 1000);
 					$this->cache[$namespace] = Json::decode(FileSystem::read($path), Json::FORCE_ARRAY);
 				} catch (JsonException $e) {
 					throw new \RuntimeException('Invalid json in storage: ' . $e->getMessage(), $e->getCode(), $e);
