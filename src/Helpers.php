@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Baraja\DynamicConfiguration;
 
 
-use Nette\Utils\Strings;
-
 final class Helpers
 {
 	/** @throws \Error */
 	public function __construct()
 	{
-		throw new \Error('Class ' . static::class . ' is static and cannot be instantiated.');
+		throw new \Error('Class ' . self::class . ' is static and cannot be instantiated.');
 	}
 
 
@@ -44,7 +42,7 @@ final class Helpers
 	 */
 	public static function formatKey(string $key, ?string $namespace): string
 	{
-		if (strpos($key, '__') !== false) {
+		if (str_contains($key, '__') === true) {
 			return self::validateKeyLength($key);
 		}
 		if ($namespace !== null && (strtolower($namespace) === 'null' || strtolower($namespace) === 'false')) {
@@ -57,7 +55,7 @@ final class Helpers
 
 	private static function validateKeyLength(string $key): string
 	{
-		if (($length = Strings::length($key)) > 128) {
+		if (($length = mb_strlen($key)) > 128) {
 			throw new \RuntimeException('Maximal key length with namespace is 128 characters, but ' . $length . ' given.');
 		}
 
