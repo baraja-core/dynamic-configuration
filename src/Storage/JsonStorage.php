@@ -13,8 +13,6 @@ final class JsonStorage implements Storage
 {
 	private const MAX_EXPIRATION_MS = 500;
 
-	private string $storageDir;
-
 	/** @var string[][] (namespace => {data}) */
 	private array $cache = [];
 
@@ -22,9 +20,9 @@ final class JsonStorage implements Storage
 	private array $cacheExpiration = [];
 
 
-	public function __construct(string $storageDir)
-	{
-		$this->storageDir = $storageDir;
+	public function __construct(
+		private string $storageDir
+	) {
 		if (\is_dir($storageDir) === false) {
 			FileSystem::createDir($storageDir);
 		}
