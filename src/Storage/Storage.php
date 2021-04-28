@@ -10,15 +10,15 @@ interface Storage
 	/**
 	 * Return list of all constants as simple array: key => value.
 	 *
-	 * @return string[]
+	 * @return array<string, string>
 	 */
 	public function loadAll(): array;
 
 	public function get(string $key): ?string;
 
 	/**
-	 * @param string[] $keys
-	 * @return string[]|null[]
+	 * @param array<int, string> $keys
+	 * @return array<string, string|null>
 	 */
 	public function getMultiple(array $keys): array;
 

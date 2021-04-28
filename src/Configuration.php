@@ -11,7 +11,7 @@ final class Configuration
 
 
 	/**
-	 * @return string[]
+	 * @return array<string, string>
 	 */
 	public function loadAll(): array
 	{
@@ -31,8 +31,8 @@ final class Configuration
 	 * You can use the real key (findKey) to search or rename the key to your own alias (finalKey).
 	 * The namespace is used for all keys, you cannot search for more than one namespace at a time.
 	 *
-	 * @param string[] $keys in format (finalKey => findKey) or (numeric => findKey)
-	 * @return string[]|null[]
+	 * @param array<string|int, string> $keys in format (finalKey => findKey) or (numeric => findKey)
+	 * @return array<string, string|null>
 	 */
 	public function getMultiple(array $keys, ?string $namespace = null): array
 	{
