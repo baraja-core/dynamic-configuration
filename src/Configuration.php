@@ -19,6 +19,12 @@ final class Configuration
 	}
 
 
+	public function getSection(string $namespace): ConfigurationSection
+	{
+		return new ConfigurationSection($this, $namespace);
+	}
+
+
 	public function get(string $key, ?string $namespace = null): ?string
 	{
 		return $this->getStorage()->get(Helpers::formatKey($key, $namespace));
