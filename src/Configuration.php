@@ -64,9 +64,6 @@ final class Configuration
 		if ($value === null) {
 			$storage->remove($formattedKey);
 		} else {
-			if (($length = mb_strlen($value, 'UTF-8')) > 512) {
-				throw new \RuntimeException('Maximal value length is 512 characters, but ' . $length . ' given.');
-			}
 			if ($storage->get($formattedKey) !== $value) { // Save only if the value has changed.
 				$storage->save($formattedKey, $value);
 			}
