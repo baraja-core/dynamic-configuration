@@ -63,6 +63,39 @@ final class Configuration
 	}
 
 
+	/**
+	 * This method finds all the required keys.
+	 * If any of the values do not exist, throws an exception with a list of missing keys.
+	 *
+	 * @param array<string|int, string> $keys in format (finalKey => findKey) or (numeric => findKey)
+	 * @return array<string, string>
+	 */
+	public function getMultipleMandatory(array $keys, ?string $namespace = null): array
+	{
+		$selection = $this->getMultiple($keys, $namespace);
+
+		$return = [];
+		$mandatory = [];
+		foreach ($selection as $key => $value) {
+			if ($value === null) {
+				$mandatory[] = $key;
+			} else {
+				$return[$key] = $value;
+			}
+		}
+		if ($mandatory !== []) {
+			throw new \LogicException(
+				'All mandatory keys must exist, but key' . (count($mandatory) === 1 ? '' : 's')
+				. ' "' . implode('", "', $mandatory) . '" '
+				. ($namespace !== null ? '(in namespace "' . $namespace . '") ' : '') . 'missing.'
+				. "\n" . 'Did you check your configuration?'
+			);
+		}
+
+		return $return;
+	}
+
+
 	public function save(string $key, ?string $value, ?string $namespace = null): void
 	{
 		$formattedKey = Helpers::formatKey($key, $namespace);
