@@ -44,13 +44,14 @@ final class Configuration
 	{
 		$keyMap = [];
 		foreach ($keys as $keyReturn => $keyFind) {
-			if (isset($keyMap[$realKey = Helpers::formatKey($keyFind, $namespace)]) === true) {
+			$realKey = Helpers::formatKey($keyFind, $namespace);
+			if (isset($keyMap[$realKey]) === true) {
 				throw new \InvalidArgumentException(
 					'Key "' . $realKey . '" already exist in key map, because "' . $keyFind . '"'
 					. ' (or alias "' . $keyReturn . '") is duplicated.',
 				);
 			}
-			$keyMap[$realKey] = \is_int($keyReturn) ? $keyFind : $keyReturn;
+			$keyMap[$realKey] = is_int($keyReturn) ? $keyFind : $keyReturn;
 		}
 
 		$return = [];
@@ -102,10 +103,8 @@ final class Configuration
 		$storage = $this->getStorage();
 		if ($value === null) {
 			$storage->remove($formattedKey);
-		} else {
-			if ($storage->get($formattedKey) !== $value) { // Save only if the value has changed.
-				$storage->save($formattedKey, $value);
-			}
+		} elseif ($storage->get($formattedKey) !== $value) { // Save only if the value has changed.
+			$storage->save($formattedKey, $value);
 		}
 	}
 
@@ -118,8 +117,12 @@ final class Configuration
 
 	public function increment(string $key, int $count = 1, ?string $namespace = null): void
 	{
-		if (Helpers::isNumeric($value = (string) $this->get($key, $namespace)) === false) {
-			throw new \RuntimeException('Constant "' . Helpers::formatKey($key, $namespace) . '" should be numeric, but value "' . $value . '" given.');
+		$value = (string) $this->get($key, $namespace);
+		if (Helpers::isNumeric($value) === false) {
+			throw new \RuntimeException(
+				'Constant "' . Helpers::formatKey($key, $namespace) . '" should be numeric, '
+				. 'but value "' . $value . '" given.',
+			);
 		}
 
 		$this->save($key, (string) (((int) $value) + $count), $namespace);
@@ -129,7 +132,10 @@ final class Configuration
 	public function getStorage(): Storage
 	{
 		if ($this->storage === null) {
-			throw new \RuntimeException('Configuration storage does not exist. Did you defined "' . DynamicConfigurationExtension::class . '" extension?');
+			throw new \RuntimeException(
+				'Configuration storage does not exist. '
+				. 'Did you defined "' . DynamicConfigurationExtension::class . '" extension?'
+			);
 		}
 
 		return $this->storage;
