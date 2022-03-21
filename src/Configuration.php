@@ -89,7 +89,7 @@ final class Configuration
 				'All mandatory keys must exist, but key' . (count($mandatory) === 1 ? '' : 's')
 				. ' "' . implode('", "', $mandatory) . '" '
 				. ($namespace !== null ? '(in namespace "' . $namespace . '") ' : '') . 'missing.'
-				. "\n" . 'Did you check your configuration?'
+				. "\n" . 'Did you check your configuration?',
 			);
 		}
 
@@ -134,7 +134,7 @@ final class Configuration
 		if ($this->storage === null) {
 			throw new \RuntimeException(
 				'Configuration storage does not exist. '
-				. 'Did you defined "' . DynamicConfigurationExtension::class . '" extension?'
+				. 'Did you defined "' . DynamicConfigurationExtension::class . '" extension?',
 			);
 		}
 

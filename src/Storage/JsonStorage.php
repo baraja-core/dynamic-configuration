@@ -21,7 +21,7 @@ final class JsonStorage implements Storage
 
 
 	public function __construct(
-		private string $storageDir
+		private string $storageDir,
 	) {
 		if (\is_dir($storageDir) === false) {
 			FileSystem::createDir($storageDir);
