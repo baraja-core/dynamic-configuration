@@ -16,7 +16,7 @@ final class JsonStorage implements Storage
 	/** @var string[][] (namespace => {data}) */
 	private array $cache = [];
 
-	/** @var float[] (namespace => expiration) */
+	/** @var array<string, float> (namespace => expiration) */
 	private array $cacheExpiration = [];
 
 
@@ -49,7 +49,7 @@ final class JsonStorage implements Storage
 
 
 	/**
-	 * @return string[]
+	 * @return array<string, string>
 	 * @throws JsonException
 	 */
 	public function loadAll(): array
@@ -60,7 +60,7 @@ final class JsonStorage implements Storage
 			if (
 				$item->getExtension() === 'json'
 				&& \is_file($item->getPathname()) === true
-				&& preg_match('/^(.+)\.json$/', $item->getBasename(), $parser)
+				&& preg_match('/^(.+)\.json$/', $item->getBasename(), $parser) === 1
 			) {
 				foreach (Json::decode(FileSystem::read($item->getPathname()), Json::FORCE_ARRAY) as $key => $value) {
 					$return[$parser[1] . '__' . $key] = $value;
@@ -97,14 +97,14 @@ final class JsonStorage implements Storage
 	{
 		if (
 			isset($this->cacheExpiration[$namespace]) === true
-			&& $this->cacheExpiration[$namespace] >= \microtime(true)
+			&& $this->cacheExpiration[$namespace] >= microtime(true)
 		) {
 			$force = true;
 		}
 		if (isset($this->cache[$namespace]) === false || $force === true) {
 			if (\is_file($path = $this->storageDir . '/' . $namespace . '.json') === true) {
 				try {
-					$this->cacheExpiration[$namespace] = (float) \microtime(true) + (self::MAX_EXPIRATION_MS / 1_000);
+					$this->cacheExpiration[$namespace] = microtime(true) + (self::MAX_EXPIRATION_MS / 1_000);
 					$this->cache[$namespace] = Json::decode(FileSystem::read($path), Json::FORCE_ARRAY);
 				} catch (JsonException $e) {
 					throw new \RuntimeException('Invalid json in storage: ' . $e->getMessage(), $e->getCode(), $e);
@@ -135,11 +135,11 @@ final class JsonStorage implements Storage
 
 
 	/**
-	 * @return string[]
+	 * @return array{namespace: string, key: string}
 	 */
 	private function parseKey(string $key): array
 	{
-		if (preg_match('/^([^_]+)__(.+)$/', $key, $keyParser)) {
+		if (preg_match('/^([^_]+)__(.+)$/', $key, $keyParser) === 1) {
 			return [
 				'namespace' => $keyParser[1],
 				'key' => $keyParser[2],
